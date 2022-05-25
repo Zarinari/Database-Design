@@ -1,0 +1,114 @@
+CREATE TABLE employee(
+  employee_id INTEGER PRIMARY KEY, 
+  first_name VARCHAR(30), 
+  last_name VARCHAR(30), 
+  hire_date DATE, 
+  job_title VARCHAR(30), 
+  shop_id INTEGER
+);
+CREATE TABLE coffee_shop(
+  shop_id INTEGER PRIMARY KEY, 
+  shop_name VARCHAR(50), 
+  city VARCHAR(50), 
+  state CHAR(2)
+);
+CREATE TABLE coffee(
+  coffee_id INTEGER PRIMARY KEY, 
+  shop_id INTEGER, 
+  supplier_id INTEGER, 
+  coffee_name VARCHAR(30), 
+  price_per_pound NUMERIC(5, 2)
+);
+CREATE TABLE supplier(
+  supplier_id INTEGER PRIMARY KEY, 
+  company_name VARCHAR(50), 
+  country VARCHAR(30), 
+  sales_contact_name VARCHAR(60), 
+  email VARCHAR(50) NOT NULL
+);
+ALTER TABLE 
+  employee 
+ADD 
+  CONSTRAINT FK_shop_id1 FOREIGN KEY(shop_id) REFERENCES coffee_shop(shop_id);
+ALTER TABLE 
+  coffee 
+ADD 
+  CONSTRAINT FK_shop_id2 FOREIGN KEY(shop_id) REFERENCES coffee_shop(shop_id);
+ALTER TABLE 
+  coffee 
+ADD 
+  CONSTRAINT FK_supplier_id FOREIGN KEY(supplier_id) REFERENCES supplier(supplier_id);
+INSERT INTO employee(
+  employee_id, first_name, last_name, 
+  hire_date, job_title, shop_id
+) 
+VALUES 
+  (
+    1, 'John', 'Doe', '2000-01-01', 'Manager', 
+    1
+  ), 
+  (
+    2, 'Jane', 'Doe', '2007-07-07', 'Barista', 
+    2
+  ), 
+  (
+    3, 'Jimmy', 'Joe', '2012-12-12', 'Janitor', 
+    3
+  );
+INSERT INTO coffee_shop(shop_id, shop_name, city, state) 
+VALUES 
+  (
+    1, 'Casa Blanca', 'New York City', 
+    'NY'
+  ), 
+  (
+    2, 'Casa Amarilla', 'Amarillo', 'TX'
+  ), 
+  (
+    3, 'Casa Anaranjada', 'Los Angeles', 
+    'CA'
+  );
+INSERT INTO coffee(
+  coffee_id, shop_id, supplier_id, coffee_name, 
+  price_per_pound
+) 
+VALUES 
+  (1, 1, 1, 'Vanilla Bean', 7.32), 
+  (2, 2, 2, 'Lima Bean', 2.89), 
+  (3, 3, 3, 'Mystery Bean', 5.45);
+INSERT INTO supplier(
+  supplier_id INTEGER, 
+  company_name VARCHAR(50), 
+  country VARCHAR(30), 
+  sales_contact_name VARCHAR(60), 
+  email VARCHAR(50) NOT NULL
+) 
+VALUES 
+  (
+    1, 'Real Vanilla Coffee', 'Mexico', 
+    'Angelica Guzman', 'aguzman@rvc.com'
+  ), 
+  (
+    2, 'I Cant Believe Its Not Coffee', 
+    'United States', 'Lavitz Herschel', 
+    'lherschel@notcoffee.com'
+  ), 
+  (
+    3, 'Its a Mystery', NULL, NULL, 'mysterycoffeeman@mysterycoffee.com'
+  );
+CREATE VIEW EmployeeView AS 
+SELECT 
+  employee_id, 
+  CONCAT(first_name, ' ', last_name) AS employee_full_name, 
+  hire_date, 
+  job_title, 
+  shop_id 
+FROM 
+  employee;
+CREATE INDEX idx_coffee_name ON coffee(coffee_name);
+SELECT 
+  supplier_id 
+FROM 
+  supplier 
+WHERE 
+  sales_contact_name IS NOT NULL
